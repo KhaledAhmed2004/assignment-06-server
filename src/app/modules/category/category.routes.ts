@@ -10,8 +10,10 @@ import {
 
 const router = express.Router();
 
+// Route to get all categories and create a new category (admin only)
 router.route('/').get(getAllCategories).post(auth('admin'), createCategory);
 
+// Route to get, update, or delete a category by ID (admin only)
 router
   .route('/:id')
   .get(getCategory)
