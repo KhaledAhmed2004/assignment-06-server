@@ -1,8 +1,8 @@
-# Tech Tips & Tricks Hub - Backend
+# TEC-QUE - Backend
 
 ## Introduction
 
-The **Tech Tips & Tricks Hub** is a web application backend that enables tech enthusiasts to share, discover, and interact with valuable tech-related content. It provides users with functionalities such as secure login, post creation, commenting, voting, and premium content access. Admins can manage users, posts, and payments, making it a dynamic platform for both content creators and consumers.
+The **Tec-Que** is a web application backend that enables tech enthusiasts to share, discover, and interact with valuable tech-related content. It provides users with functionalities such as secure login, post creation, commenting, voting, and premium content access. Admins can manage users, posts, and payments, making it a dynamic platform for both content creators and consumers.
 
 ## Project Description
 
