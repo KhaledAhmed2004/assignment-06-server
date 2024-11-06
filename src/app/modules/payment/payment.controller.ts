@@ -93,8 +93,10 @@ export const initPayment = catchAsync(async (req, res, next) => {
     store_id: process.env.STORE_ID,
     signature_key: process.env.SIGNATURE_KEY,
     tran_id: transactionId,
-    success_url: `http://localhost:5000/api/payments/confirmation?transactionId=${transactionId}&userId=${req.user.userId}`,
-    fail_url: 'http://www.merchantdomain.com/failedpage.html',
+    success_url: `https://tec-que-server.vercel.app/api/payments/confirmation?transactionId=${transactionId}&userId=${req.user.userId}`,
+    // fail_url: 'http://www.merchantdomain.com/failedpage.html',
+    fail_url: `https://tec-que-server.vercel.app/api/payments/failure?transactionId=${transactionId}&userId=${req.user.userId}`, // Updated failure URL
+
     cancel_url: 'http://www.merchantdomain.com/cancelpage.html',
     amount: '2000.0',
     currency: 'BDT',
@@ -146,8 +148,15 @@ export const confirmationController = catchAsync(async (req, res, next) => {
     payment_status: 'completed',
   });
 
-  res.send(`<h1>Payment success</h1>`);
+  // res.send(`<h1>Payment success</h1>`);
+  res.redirect(`${process.env.CLIENT_URL}/payment/success`);
 });
 
 // Get All Payments
 export const getAllPayments = factory.getAll(Payment, 'user');
+
+// Payment Failure
+export const paymentFailureController = catchAsync(async (req, res) => {
+  // res.send(`<h1>Payment success</h1>`);
+  res.redirect(`${process.env.CLIENT_URL}/payment/error`);
+});

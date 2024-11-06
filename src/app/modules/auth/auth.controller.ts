@@ -68,6 +68,7 @@ export const logout: RequestHandler = (req, res) => {
 export const forgotPassword = catchAsync(async (req, res, next) => {
   // 1) Get the user based on the POSTed email
   const user = await User.findOne({ email: req.body.email });
+
   if (!user) {
     return next(
       new AppError(
@@ -89,9 +90,9 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
       status: 'success',
       message: 'Token sent to email!',
     });
-  } catch(error) {
-    console.log(error);
-    
+  } catch (error) {
+    console.error('Error details:', error); // Log the error details
+
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save({ validateBeforeSave: false });

@@ -81,7 +81,7 @@ exports.forgotPassword = (0, catchAsync_1.default)((req, res, next) => __awaiter
         });
     }
     catch (error) {
-        console.log(error);
+        console.error('Error details:', error); // Log the error details
         user.passwordResetToken = undefined;
         user.passwordResetExpires = undefined;
         yield user.save({ validateBeforeSave: false });

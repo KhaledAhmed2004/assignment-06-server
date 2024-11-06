@@ -10,11 +10,11 @@ import {
 } from './post.controller';
 
 const router = express.Router();
-
+// Get all posts or create a post (requires 'admin' or 'user' role for POST)
 router.route('/').get(getAllPosts).post(auth('admin', 'user'), createPost);
-
+// Get posts by the authenticated user ('user' or 'admin' role required)
 router.get('/my-posts', auth('user', 'admin'), getMyPosts);
-
+// Get, update, or delete a post by ID (update/delete require 'admin' or 'user' role)
 router
   .route('/:id')
   .get(getPost)

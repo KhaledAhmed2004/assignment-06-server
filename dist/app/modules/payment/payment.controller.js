@@ -1,4 +1,13 @@
 "use strict";
+// import httpStatus from 'http-status';
+// import catchAsync from '../../utils/catchAsync';
+// import User from '../user/user.model';
+// import AppError from '../../errors/AppError';
+// import dotenv from 'dotenv';
+// import axios from 'axios';
+// import { paymentServices } from './payment.services';
+// import * as factory from '../../utils/handlerFactory';
+// import Payment from './payment.model';
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -35,86 +44,126 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllPayments = exports.paymentError = exports.paymentSuccess = exports.initPayment = void 0;
+exports.paymentFailureController = exports.getAllPayments = exports.confirmationController = exports.initPayment = void 0;
+// dotenv.config();
+// // Initialize Payment
+// export const initPayment = catchAsync(async (req, res, next) => {
+//   const user = await User.findById(req.user.userId);
+//   if (!user) return next(new AppError(httpStatus.NOT_FOUND, `User not found`));
+//   const transactionId = `TXN${Date.now()}`;
+//   const response = await axios.post(process.env.PAYMENT_URL!, {
+//     store_id: process.env.STORE_ID,
+//     signature_key: process.env.SIGNATURE_KEY,
+//     tran_id: transactionId,
+//     success_url: `http://localhost:5000/api/payments/confirmation?transactionId=${transactionId}&userId=${req.user.userId}`,
+//     fail_url: 'http://www.merchantdomain.com/failedpage.html',
+//     cancel_url: 'http://www.merchantdomain.com/cancelpage.html',
+//     amount: '2000.0',
+//     currency: 'BDT',
+//     desc: 'Merchant Registration Payment',
+//     cus_name: user.name,
+//     cus_email: user.email,
+//     cus_add1: 'House B-158 Road 22',
+//     cus_add2: 'Mohakhali DOHS',
+//     cus_city: 'Dhaka',
+//     cus_state: 'Dhaka',
+//     cus_postcode: '1206',
+//     cus_country: 'Bangladesh',
+//     cus_phone: '+8801704',
+//     type: 'json',
+//   });
+//   console.log(response.data);
+//   res.status(200).json({
+//     status: 'success',
+//     payment_url: response.data.payment_url,
+//   });
+// });
+// // Payment Confirmation
+// export const confirmationController = catchAsync(async (req, res, next) => {
+//   const { transactionId, userId } = req.query;
+//   if (!transactionId || !userId) {
+//     return next(
+//       new AppError(
+//         httpStatus.BAD_REQUEST,
+//         'Transaction ID and User ID are required.',
+//       ),
+//     );
+//   }
+//   const result = await paymentServices.confirmationService(
+//     transactionId as string,
+//     userId as string,
+//   );
+//   res.send(`<h1>Payment success</h1>`);
+// });
+// // Get All Payments
+// export const getAllPayments = factory.getAll(Payment, 'user');
 const http_status_1 = __importDefault(require("http-status"));
-const sslcommerz_lts_1 = __importDefault(require("sslcommerz-lts"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
-const factory = __importStar(require("../../utils/handlerFactory"));
 const user_model_1 = __importDefault(require("../user/user.model"));
 const AppError_1 = __importDefault(require("../../errors/AppError"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const axios_1 = __importDefault(require("axios"));
+const payment_services_1 = require("./payment.services");
+const factory = __importStar(require("../../utils/handlerFactory"));
 const payment_model_1 = __importDefault(require("./payment.model"));
-const store_id = process.env.STORE_ID;
-const store_passwd = process.env.STORE_PASSWORD;
-const is_live = false;
+dotenv_1.default.config();
+// Initialize Payment
 exports.initPayment = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_model_1.default.findById(req.user.userId);
     if (!user)
         return next(new AppError_1.default(http_status_1.default.NOT_FOUND, `User not found`));
     const transactionId = `TXN${Date.now()}`;
-    const data = {
-        total_amount: 2000,
-        currency: 'BDT',
+    const response = yield axios_1.default.post(process.env.PAYMENT_URL, {
+        store_id: process.env.STORE_ID,
+        signature_key: process.env.SIGNATURE_KEY,
         tran_id: transactionId,
-        success_url: `${process.env.API_URL}/payments/success/${req.user.userId}/${transactionId}`,
-        fail_url: `${process.env.API_URL}/payments/error/${transactionId}`,
-        cancel_url: `${process.env.API_URL}/payments/error/${transactionId}`,
-        ipn_url: 'http://localhost:3030/ipn',
-        shipping_method: 'Online',
-        product_name: 'Subscription',
-        product_category: 'Subscription',
-        product_profile: 'general',
-        cus_name: user.name || '',
-        cus_email: user.email || '',
-        cus_add1: 'Dhaka',
-        cus_add2: 'Dhaka',
+        success_url: `https://tec-que-server.vercel.app/api/payments/confirmation?transactionId=${transactionId}&userId=${req.user.userId}`,
+        // fail_url: 'http://www.merchantdomain.com/failedpage.html',
+        fail_url: `https://tec-que-server.vercel.app/api/payments/failure?transactionId=${transactionId}&userId=${req.user.userId}`,
+        cancel_url: 'http://www.merchantdomain.com/cancelpage.html',
+        amount: '2000.0',
+        currency: 'BDT',
+        desc: 'Merchant Registration Payment',
+        cus_name: user.name,
+        cus_email: user.email,
+        cus_add1: 'House B-158 Road 22',
+        cus_add2: 'Mohakhali DOHS',
         cus_city: 'Dhaka',
         cus_state: 'Dhaka',
-        cus_postcode: '1000',
+        cus_postcode: '1206',
         cus_country: 'Bangladesh',
-        cus_phone: '01711111111',
-        cus_fax: '01711111111',
-        ship_name: user.name || '',
-        ship_add1: 'Dhaka',
-        ship_add2: 'Dhaka',
-        ship_city: 'Dhaka',
-        ship_state: 'Dhaka',
-        ship_postcode: 1000,
-        ship_country: 'Bangladesh',
-    };
-    const sslcz = new sslcommerz_lts_1.default(store_id, store_passwd, is_live);
-    // Save initial payment in the database as "Pending"
-    yield payment_model_1.default.create({
-        user: req.user.userId,
-        tran_id: transactionId,
-        amount: data.total_amount,
-        currency: data.currency,
-        payment_status: 'pending',
+        cus_phone: '+8801704',
+        type: 'json',
     });
-    sslcz.init(data).then((apiResponse) => {
-        // Redirect the user to payment gateway
-        const GatewayPageURL = apiResponse.GatewayPageURL;
-        res.status(http_status_1.default.OK).json({
-            success: true,
-            statusCode: http_status_1.default.OK,
-            message: `Payment initiated successfully`,
-            data: GatewayPageURL,
-        });
+    console.log(response.data);
+    res.status(200).json({
+        status: 'success',
+        payment_url: response.data.payment_url,
     });
 }));
-exports.paymentSuccess = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Payment success route hit');
-    const { userId, transactionId } = req.params;
-    console.log('User ID:', userId);
-    console.log('Transaction ID:', transactionId);
-    yield Promise.all([
-        user_model_1.default.findByIdAndUpdate(userId, { isVerified: true }),
-        payment_model_1.default.findOneAndUpdate({ tran_id: transactionId }, { payment_status: 'completed' }),
-    ]);
+// Payment Confirmation
+exports.confirmationController = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { transactionId, userId } = req.query;
+    if (!transactionId || !userId) {
+        return next(new AppError_1.default(http_status_1.default.BAD_REQUEST, 'Transaction ID and User ID are required.'));
+    }
+    // Update the user and payment status
+    const result = yield payment_services_1.paymentServices.confirmationService(transactionId, userId);
+    // Create a new payment record in the Payment collection
+    yield payment_model_1.default.create({
+        user: userId,
+        tran_id: transactionId,
+        amount: 2000,
+        currency: 'BDT',
+        payment_status: 'completed',
+    });
+    // res.send(`<h1>Payment success</h1>`);
     res.redirect(`${process.env.CLIENT_URL}/payment/success`);
 }));
-exports.paymentError = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { transactionId } = req.params;
-    yield payment_model_1.default.findOneAndUpdate({ tran_id: transactionId }, { payment_status: 'failed' });
+// Get All Payments
+exports.getAllPayments = factory.getAll(payment_model_1.default, 'user');
+// Payment Failure
+exports.paymentFailureController = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // res.send(`<h1>Payment success</h1>`);
     res.redirect(`${process.env.CLIENT_URL}/payment/error`);
 }));
-exports.getAllPayments = factory.getAll(payment_model_1.default, 'user');

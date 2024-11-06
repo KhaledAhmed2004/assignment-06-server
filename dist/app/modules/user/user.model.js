@@ -45,7 +45,7 @@ const userSchema = new mongoose_1.Schema({
     },
     profilePic: {
         type: String,
-        default: 'https://res.cloudinary.com/djkdk03mf/image/upload/v1728307083/bg_awus4k.png',
+        default: 'https://res.cloudinary.com/dkfphaooa/image/upload/v1729743544/ihcgtzfktxsmck7zew4c.png',
     },
     isVerified: {
         type: Boolean,
